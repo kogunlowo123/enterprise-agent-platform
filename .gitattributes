@@ -1,0 +1,21 @@
+# Normalise to LF in the repository. The container, CI and every deployment target are
+# Linux; a CRLF shell script or Dockerfile fails there in ways that are tedious to diagnose.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.woff binary
+*.woff2 binary
+
+# Rendered on GitHub rather than diffed as source.
+*.svg -diff linguist-detectable=false
+
+# Keep vendored or generated content out of the language statistics.
+docs/** linguist-documentation
+deploy/** linguist-detectable=true

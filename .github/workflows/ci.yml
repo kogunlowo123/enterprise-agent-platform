@@ -1,0 +1,140 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+jobs:
+  quality:
+    name: Lint, types and tests (py${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Lint
+        run: python -m ruff check src tests
+
+      - name: Format check
+        run: python -m ruff format --check src tests
+
+      - name: Type check (strict)
+        run: python -m mypy
+
+      - name: Tests
+        run: python -m pytest -q --cov=src/eap --cov-report=xml --cov-report=term-missing
+
+      - name: Upload coverage
+        if: matrix.python == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml
+          retention-days: 14
+
+  evaluation:
+    name: Evaluation gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      # Runs against the deterministic provider, so the gate measures retrieval quality,
+      # prompt assembly and the guardrail layer rather than a model's sampling variance.
+      # It costs nothing and cannot flake.
+      - name: Run evaluation suites
+        run: python -m scripts.run_evals
+
+      - name: Upload evaluation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evaluation-report
+          path: reports/
+          retention-days: 14
+
+  container:
+    name: Container build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/docker/Dockerfile
+          push: false
+          load: true
+          tags: enterprise-agent-platform:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Start container
+        run: |
+          docker run -d --name eap -p 8000:8000 \
+            -e EAP_ENVIRONMENT=local \
+            -e EAP_IDENTITY_DEV_SIGNING_KEY=ci-only-signing-key-at-least-32-bytes-long \
+            enterprise-agent-platform:ci
+
+      - name: Wait for readiness
+        run: |
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://localhost:8000/healthz > /dev/null; then
+              echo "healthy after ${attempt} attempts"
+              curl -fsS http://localhost:8000/readyz | tee /dev/stderr | grep -q '"ready":true'
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "container never became healthy" >&2
+          docker logs eap >&2
+          exit 1
+
+      - name: Confirm the process is not running as root
+        run: |
+          uid=$(docker exec eap id -u)
+          test "$uid" = "10001" || { echo "expected uid 10001, got $uid" >&2; exit 1; }
+
+      - name: Container logs
+        if: always()
+        run: docker logs eap || true

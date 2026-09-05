@@ -1,0 +1,16 @@
+apiVersion: v2
+name: eap
+description: Enterprise Agent Platform — control plane for running LLM agents in production
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - agents
+  - llmops
+  - rag
+  - mcp
+home: https://github.com/kogunlowo123/enterprise-agent-platform
+sources:
+  - https://github.com/kogunlowo123/enterprise-agent-platform
+maintainers:
+  - name: Kunle Ogunlowo

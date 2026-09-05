@@ -1,0 +1,64 @@
+# Production overlay.
+#
+# `Settings` validates this combination at startup and refuses to run if any of it is
+# missing — an in-memory audit sink, HS256 development signing, the deterministic embedder,
+# injection enforcement disabled or prompt-content export enabled all stop the process.
+# Every problem is reported at once, so one failed deploy gives the full list.
+
+replicaCount: 3
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 65
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    memory: 2Gi
+
+env:
+  EAP_ENVIRONMENT: prod
+  EAP_OBS_LOG_FORMAT: json
+  EAP_OBS_LOG_LEVEL: INFO
+  EAP_OBS_TRACE_SAMPLE_RATIO: "0.1"
+  EAP_OBS_CAPTURE_PROMPT_CONTENT: "false"
+  EAP_OBS_OTLP_ENDPOINT: http://otel-collector.observability:4318/v1/traces
+
+  EAP_SECOPS_AUDIT_SINK: file
+  EAP_SECOPS_AUDIT_FILE_PATH: /var/audit/audit.jsonl
+  EAP_SECOPS_BLOCK_ON_INJECTION: "true"
+  EAP_SECOPS_INJECTION_THRESHOLD: "0.5"
+  EAP_SECOPS_REDACT_PII_IN_PROMPTS: "true"
+
+  EAP_DATAOPS_VECTOR_STORE: pgvector
+  EAP_DATAOPS_EMBEDDING_PROVIDER: openai
+  EAP_DATAOPS_EMBEDDING_MODEL: text-embedding-3-small
+  EAP_DATAOPS_EMBEDDING_DIMENSIONS: "1536"
+
+  EAP_IDENTITY_ISSUER: https://login.example.com/
+  EAP_IDENTITY_AUDIENCE: eap-gateway
+
+  EAP_NETOPS_RATE_LIMIT_PER_MINUTE: "600"
+  EAP_NETOPS_RATE_LIMIT_BURST: "60"
+  EAP_LLMOPS_DAILY_TENANT_BUDGET_USD: "250"
+
+# Created out of band by the secret manager (External Secrets, Vault agent, or the cloud
+# provider's CSI driver). The chart references it; it never templates a credential.
+existingSecret: eap-secrets
+
+auditVolume:
+  enabled: true
+  size: 50Gi
+  storageClass: gp3-retain
+
+networkPolicy:
+  enabled: true
+  allowedEgressPorts: [443, 5432]

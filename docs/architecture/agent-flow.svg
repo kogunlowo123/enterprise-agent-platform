@@ -1,0 +1,332 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 1240" width="1240" height="1240" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" role="img" aria-labelledby="title desc">
+  <title id="title">Enterprise Agent Platform — request lifecycle across six operational planes</title>
+  <desc id="desc">A request enters through the NetOps edge, is authenticated by Identity, inspected by SecOps guardrails, then runs the orchestrator lifecycle: receive, resolve, retrieve, reason, audit, execute, validate, learn. DataOps supplies grounded knowledge, LLMOps routes the model call, AppOps runs tools and MCP servers. Every decision is written to a hash-chained audit log and traced through OpenTelemetry.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+    <marker id="arrow-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3f4b5f"/>
+    </marker>
+    <style>
+      .bg      { fill: #0b1220; }
+      .card    { fill: #131c2e; stroke: #243047; stroke-width: 1.25; }
+      .inner   { fill: #0f1729; stroke: #223049; stroke-width: 1; }
+      .rail    { fill: #101a2c; stroke: #22304a; stroke-width: 1.25; }
+      .h1      { fill: #f1f5f9; font-size: 26px; font-weight: 700; }
+      .sub     { fill: #8ea3bd; font-size: 13.5px; }
+      .plane   { font-size: 12px; font-weight: 700; letter-spacing: 1.4px; }
+      .title   { fill: #e8eef7; font-size: 15.5px; font-weight: 650; }
+      .body    { fill: #9fb2c9; font-size: 12.5px; }
+      .mono    { fill: #93a7c0; font-size: 11.5px; font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; }
+      .step    { fill: #cbd8e8; font-size: 12.5px; font-weight: 600; }
+      .stepn   { fill: #55637a; font-size: 11px; font-weight: 700; }
+      .flow    { stroke: #64748b; stroke-width: 1.6; fill: none; marker-end: url(#arrow); }
+      .flowdim { stroke: #3f4b5f; stroke-width: 1.2; fill: none; stroke-dasharray: 4 4; marker-end: url(#arrow-dim); }
+      .lbl     { fill: #6b7c94; font-size: 11px; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1240" height="1240"/>
+
+  <text class="h1" x="40" y="52">Enterprise Agent Platform</text>
+  <text class="sub" x="40" y="76">One request, six operational planes. Every refusal names a rule; every decision is written to a verifiable audit chain.</text>
+
+  <!-- plane legend -->
+  <g transform="translate(40,98)">
+    <g><rect x="0" y="0" width="10" height="10" rx="2" fill="#a78bfa"/><text class="lbl" x="16" y="9">Identity</text></g>
+    <g><rect x="86" y="0" width="10" height="10" rx="2" fill="#fb7185"/><text class="lbl" x="102" y="9">SecOps</text></g>
+    <g><rect x="168" y="0" width="10" height="10" rx="2" fill="#38bdf8"/><text class="lbl" x="184" y="9">NetOps</text></g>
+    <g><rect x="250" y="0" width="10" height="10" rx="2" fill="#34d399"/><text class="lbl" x="266" y="9">DataOps</text></g>
+    <g><rect x="337" y="0" width="10" height="10" rx="2" fill="#fbbf24"/><text class="lbl" x="353" y="9">LLMOps</text></g>
+    <g><rect x="422" y="0" width="10" height="10" rx="2" fill="#818cf8"/><text class="lbl" x="438" y="9">AppOps</text></g>
+  </g>
+
+  <!-- ============ LEFT RAIL: observability ============ -->
+  <rect class="rail" x="40" y="140" width="150" height="880" rx="12"/>
+  <text class="plane" x="60" y="170" fill="#7dd3fc">OBSERVABILITY</text>
+  <text class="body" x="60" y="196">OpenTelemetry</text>
+  <text class="body" x="60" y="214">span per turn</text>
+  <text class="mono" x="60" y="248">trace_id</text>
+  <text class="mono" x="60" y="266">span_id</text>
+  <text class="mono" x="60" y="284">correlation_id</text>
+  <text class="mono" x="60" y="302">tenant_id</text>
+  <text class="mono" x="60" y="320">run_id</text>
+  <line x1="60" y1="344" x2="170" y2="344" stroke="#243047" stroke-width="1"/>
+  <text class="body" x="60" y="370">Structured logs</text>
+  <text class="body" x="60" y="388">carry request</text>
+  <text class="body" x="60" y="406">context without</text>
+  <text class="body" x="60" y="424">the caller</text>
+  <text class="body" x="60" y="442">passing it.</text>
+  <line x1="60" y1="466" x2="170" y2="466" stroke="#243047" stroke-width="1"/>
+  <text class="body" x="60" y="492">Prompt bodies</text>
+  <text class="body" x="60" y="510">are NOT exported</text>
+  <text class="body" x="60" y="528">by default.</text>
+  <line x1="60" y1="552" x2="170" y2="552" stroke="#243047" stroke-width="1"/>
+  <text class="body" x="60" y="578">Cost attributed</text>
+  <text class="body" x="60" y="596">per tenant,</text>
+  <text class="body" x="60" y="614">model and agent</text>
+  <text class="body" x="60" y="632">at call time.</text>
+  <line x1="60" y1="656" x2="170" y2="656" stroke="#243047" stroke-width="1"/>
+  <text class="body" x="60" y="682">Health probes</text>
+  <text class="mono" x="60" y="706">/healthz</text>
+  <text class="body" x="60" y="724">liveness only,</text>
+  <text class="body" x="60" y="742">no dependencies</text>
+  <text class="mono" x="60" y="768">/readyz</text>
+  <text class="body" x="60" y="786">checks router,</text>
+  <text class="body" x="60" y="804">store, MCP and</text>
+  <text class="body" x="60" y="822">audit integrity</text>
+  <line x1="60" y1="846" x2="170" y2="846" stroke="#243047" stroke-width="1"/>
+  <text class="body" x="60" y="872">Evaluation gate</text>
+  <text class="body" x="60" y="890">runs in CI:</text>
+  <text class="body" x="60" y="908">groundedness,</text>
+  <text class="body" x="60" y="926">citation cover,</text>
+  <text class="body" x="60" y="944">refusal, and</text>
+  <text class="body" x="60" y="962">injection</text>
+  <text class="body" x="60" y="980">resistance.</text>
+
+  <!-- ============ RIGHT RAIL: audit chain ============ -->
+  <rect class="rail" x="1050" y="140" width="150" height="880" rx="12"/>
+  <text class="plane" x="1070" y="170" fill="#fda4af">AUDIT CHAIN</text>
+  <text class="body" x="1070" y="196">Append-only,</text>
+  <text class="body" x="1070" y="214">hash-linked.</text>
+
+  <g transform="translate(1070,236)">
+    <rect class="inner" x="0" y="0" width="110" height="46" rx="6"/>
+    <text class="mono" x="10" y="19">auth.succeeded</text>
+    <text class="mono" x="10" y="36" fill="#5a6b83">sha256 · n-1</text>
+  </g>
+  <line x1="1125" y1="282" x2="1125" y2="300" stroke="#3f4b5f" stroke-width="1.4"/>
+  <g transform="translate(1070,300)">
+    <rect class="inner" x="0" y="0" width="110" height="46" rx="6"/>
+    <text class="mono" x="10" y="19">run.started</text>
+    <text class="mono" x="10" y="36" fill="#5a6b83">sha256 · n-1</text>
+  </g>
+  <line x1="1125" y1="346" x2="1125" y2="364" stroke="#3f4b5f" stroke-width="1.4"/>
+  <g transform="translate(1070,364)">
+    <rect class="inner" x="0" y="0" width="110" height="46" rx="6"/>
+    <text class="mono" x="10" y="19">knowledge.</text>
+    <text class="mono" x="10" y="36">retrieved</text>
+  </g>
+  <line x1="1125" y1="410" x2="1125" y2="428" stroke="#3f4b5f" stroke-width="1.4"/>
+  <g transform="translate(1070,428)">
+    <rect class="inner" x="0" y="0" width="110" height="46" rx="6"/>
+    <text class="mono" x="10" y="19">model.invoked</text>
+    <text class="mono" x="10" y="36" fill="#5a6b83">tokens · cost</text>
+  </g>
+  <line x1="1125" y1="474" x2="1125" y2="492" stroke="#3f4b5f" stroke-width="1.4"/>
+  <g transform="translate(1070,492)">
+    <rect class="inner" x="0" y="0" width="110" height="46" rx="6"/>
+    <text class="mono" x="10" y="19">tool.invoked</text>
+    <text class="mono" x="10" y="36" fill="#5a6b83">keys, not values</text>
+  </g>
+  <line x1="1125" y1="538" x2="1125" y2="556" stroke="#3f4b5f" stroke-width="1.4"/>
+  <g transform="translate(1070,556)">
+    <rect class="inner" x="0" y="0" width="110" height="46" rx="6"/>
+    <text class="mono" x="10" y="19">guardrail.</text>
+    <text class="mono" x="10" y="36">tripped</text>
+  </g>
+  <line x1="1125" y1="602" x2="1125" y2="620" stroke="#3f4b5f" stroke-width="1.4"/>
+  <g transform="translate(1070,620)">
+    <rect class="inner" x="0" y="0" width="110" height="46" rx="6"/>
+    <text class="mono" x="10" y="19">run.completed</text>
+    <text class="mono" x="10" y="36" fill="#5a6b83">head hash</text>
+  </g>
+
+  <line x1="1070" y1="700" x2="1180" y2="700" stroke="#243047" stroke-width="1"/>
+  <text class="body" x="1070" y="726">Each record</text>
+  <text class="body" x="1070" y="744">hashes its own</text>
+  <text class="body" x="1070" y="762">content plus the</text>
+  <text class="body" x="1070" y="780">hash before it.</text>
+  <text class="body" x="1070" y="806">Editing, deleting</text>
+  <text class="body" x="1070" y="824">or reordering any</text>
+  <text class="body" x="1070" y="842">record breaks</text>
+  <text class="body" x="1070" y="860">verification from</text>
+  <text class="body" x="1070" y="878">that point on.</text>
+  <line x1="1070" y1="902" x2="1180" y2="902" stroke="#243047" stroke-width="1"/>
+  <text class="mono" x="1070" y="928">GET /v1/audit</text>
+  <text class="mono" x="1070" y="946">    /verify</text>
+  <text class="body" x="1070" y="972">recomputes the</text>
+  <text class="body" x="1070" y="990">whole chain.</text>
+
+  <!-- ============ CENTRE FLOW ============ -->
+
+  <!-- 1. clients -->
+  <g transform="translate(215,140)">
+    <rect class="card" x="0" y="0" width="820" height="62" rx="10"/>
+    <text class="title" x="20" y="27">Applications, copilots and automated callers</text>
+    <text class="body" x="20" y="48">Bearer token · tenant claim · optional inbound correlation id</text>
+  </g>
+  <path class="flow" d="M 625 202 L 625 232"/>
+
+  <!-- 2. netops edge -->
+  <g transform="translate(215,236)">
+    <rect class="card" x="0" y="0" width="820" height="86" rx="10"/>
+    <rect x="0" y="0" width="4" height="86" rx="2" fill="#38bdf8"/>
+    <text class="plane" x="20" y="24" fill="#7dd3fc">NETOPS · EDGE</text>
+    <text class="body" x="20" y="47">Token-bucket rate limits per principal and per tenant · request timeouts</text>
+    <text class="body" x="20" y="67">Retry with full jitter · circuit breaker per provider · HTTPS egress allowlist</text>
+    <text class="mono" x="620" y="47">429 + Retry-After</text>
+    <text class="mono" x="620" y="67">503 circuit_open</text>
+  </g>
+  <path class="flow" d="M 625 322 L 625 352"/>
+
+  <!-- 3. identity -->
+  <g transform="translate(215,356)">
+    <rect class="card" x="0" y="0" width="820" height="100" rx="10"/>
+    <rect x="0" y="0" width="4" height="100" rx="2" fill="#a78bfa"/>
+    <text class="plane" x="20" y="24" fill="#c4b5fd">IDENTITY</text>
+    <text class="body" x="20" y="47">OIDC / JWKS signature, issuer, audience, expiry and a required tenant claim</text>
+    <text class="body" x="20" y="67">Roles resolve to permissions once, at authentication time</text>
+    <g transform="translate(500,32)">
+      <rect class="inner" x="0" y="0" width="300" height="54" rx="7"/>
+      <text class="step" x="14" y="22">caller grants  ∩  agent grants</text>
+      <text class="body" x="14" y="42">intersection, never union</text>
+    </g>
+  </g>
+  <path class="flow" d="M 625 456 L 625 486"/>
+
+  <!-- 4. secops -->
+  <g transform="translate(215,490)">
+    <rect class="card" x="0" y="0" width="820" height="86" rx="10"/>
+    <rect x="0" y="0" width="4" height="86" rx="2" fill="#fb7185"/>
+    <text class="plane" x="20" y="24" fill="#fda4af">SECOPS · GOVERNANCE</text>
+    <text class="body" x="20" y="47">Prompt-injection scoring (weighted by trust boundary) · credential and PII detection</text>
+    <text class="body" x="20" y="67">Policy engine: residency, model allowlist, cost ceiling, human-approval obligations</text>
+    <text class="mono" x="640" y="47">403 guardrail_tripped</text>
+    <text class="mono" x="640" y="67">403 policy_violation</text>
+  </g>
+  <path class="flow" d="M 625 576 L 625 606"/>
+
+  <!-- 5. orchestrator -->
+  <g transform="translate(215,610)">
+    <rect class="card" x="0" y="0" width="820" height="196" rx="10"/>
+    <rect x="0" y="0" width="4" height="196" rx="2" fill="#818cf8"/>
+    <text class="plane" x="20" y="24" fill="#a5b4fc">APPOPS · ORCHESTRATOR</text>
+    <text class="body" x="20" y="45">The orchestrator owns the workflow. The model reasons inside it and never about it.</text>
+
+    <g transform="translate(20,62)">
+      <g>
+        <rect class="inner" x="0" y="0" width="92" height="52" rx="7"/>
+        <text class="stepn" x="12" y="19">1</text><text class="step" x="12" y="38">Receive</text>
+      </g>
+      <g transform="translate(98,0)">
+        <rect class="inner" x="0" y="0" width="92" height="52" rx="7"/>
+        <text class="stepn" x="12" y="19">2</text><text class="step" x="12" y="38">Resolve</text>
+      </g>
+      <g transform="translate(196,0)">
+        <rect class="inner" x="0" y="0" width="92" height="52" rx="7"/>
+        <text class="stepn" x="12" y="19">3</text><text class="step" x="12" y="38">Retrieve</text>
+      </g>
+      <g transform="translate(294,0)">
+        <rect class="inner" x="0" y="0" width="92" height="52" rx="7"/>
+        <text class="stepn" x="12" y="19">4</text><text class="step" x="12" y="38">Reason</text>
+      </g>
+      <g transform="translate(392,0)">
+        <rect class="inner" x="0" y="0" width="92" height="52" rx="7"/>
+        <text class="stepn" x="12" y="19">5</text><text class="step" x="12" y="38">Audit</text>
+      </g>
+      <g transform="translate(490,0)">
+        <rect class="inner" x="0" y="0" width="92" height="52" rx="7"/>
+        <text class="stepn" x="12" y="19">6</text><text class="step" x="12" y="38">Execute</text>
+      </g>
+      <g transform="translate(588,0)">
+        <rect class="inner" x="0" y="0" width="92" height="52" rx="7"/>
+        <text class="stepn" x="12" y="19">7</text><text class="step" x="12" y="38">Validate</text>
+      </g>
+      <g transform="translate(686,0)">
+        <rect class="inner" x="0" y="0" width="92" height="52" rx="7"/>
+        <text class="stepn" x="12" y="19">8</text><text class="step" x="12" y="38">Learn</text>
+      </g>
+
+      <path class="flow" d="M 92 26 L 96 26"/>
+      <path class="flow" d="M 190 26 L 194 26"/>
+      <path class="flow" d="M 288 26 L 292 26"/>
+      <path class="flow" d="M 386 26 L 390 26"/>
+      <path class="flow" d="M 484 26 L 488 26"/>
+      <path class="flow" d="M 582 26 L 586 26"/>
+      <path class="flow" d="M 680 26 L 684 26"/>
+    </g>
+
+    <text class="body" x="20" y="146">Audit is written before the action, not after: an action audited afterwards is one whose</text>
+    <text class="body" x="20" y="166">record can be lost by the crash it caused. Memory is scoped by tenant and principal.</text>
+    <text class="mono" x="20" y="186">session memory · episodic outcomes · long-term facts</text>
+  </g>
+
+  <!-- fan-out to the three service planes -->
+  <path class="flow" d="M 405 806 L 405 838"/>
+  <path class="flow" d="M 625 806 L 625 838"/>
+  <path class="flow" d="M 845 806 L 845 838"/>
+
+  <!-- 6a. dataops -->
+  <g transform="translate(215,842)">
+    <rect class="card" x="0" y="0" width="262" height="180" rx="10"/>
+    <rect x="0" y="0" width="4" height="180" rx="2" fill="#34d399"/>
+    <text class="plane" x="18" y="24" fill="#6ee7b7">DATAOPS</text>
+    <text class="title" x="18" y="48">Knowledge</text>
+    <text class="body" x="18" y="72">GitHub / FHIR / docs</text>
+    <text class="body" x="18" y="92">structure-aware chunking</text>
+    <text class="body" x="18" y="112">embeddings → pgvector</text>
+    <text class="body" x="18" y="132">BM25 + vector, fused</text>
+    <text class="body" x="18" y="152">by reciprocal rank</text>
+    <text class="mono" x="18" y="172">per-tenant partitions</text>
+  </g>
+
+  <!-- 6b. llmops -->
+  <g transform="translate(494,842)">
+    <rect class="card" x="0" y="0" width="262" height="180" rx="10"/>
+    <rect x="0" y="0" width="4" height="180" rx="2" fill="#fbbf24"/>
+    <text class="plane" x="18" y="24" fill="#fcd34d">LLMOPS</text>
+    <text class="title" x="18" y="48">Model routing</text>
+    <text class="body" x="18" y="72">named routes, not models</text>
+    <text class="body" x="18" y="92">cross-vendor fallback</text>
+    <text class="body" x="18" y="112">budget checked first</text>
+    <text class="body" x="18" y="132">versioned prompts</text>
+    <text class="body" x="18" y="152">deterministic evals</text>
+    <text class="mono" x="18" y="172">fast · balanced · deep</text>
+  </g>
+
+  <!-- 6c. appops tools -->
+  <g transform="translate(773,842)">
+    <rect class="card" x="0" y="0" width="262" height="180" rx="10"/>
+    <rect x="0" y="0" width="4" height="180" rx="2" fill="#818cf8"/>
+    <text class="plane" x="18" y="24" fill="#a5b4fc">APPOPS</text>
+    <text class="title" x="18" y="48">Tools &amp; MCP</text>
+    <text class="body" x="18" y="72">JSON Schema validated</text>
+    <text class="body" x="18" y="92">permission per tool</text>
+    <text class="body" x="18" y="112">mutating ⇒ approval</text>
+    <text class="body" x="18" y="132">MCP servers namespaced</text>
+    <text class="body" x="18" y="152">untrusted output filtered</text>
+    <text class="mono" x="18" y="172">server.tool</text>
+  </g>
+
+  <!-- 7. providers / backends -->
+  <path class="flow" d="M 346 1022 L 346 1054"/>
+  <path class="flow" d="M 625 1022 L 625 1054"/>
+  <path class="flow" d="M 904 1022 L 904 1054"/>
+
+  <g transform="translate(215,1058)">
+    <rect class="card" x="0" y="0" width="262" height="72" rx="10"/>
+    <text class="title" x="18" y="28">Postgres + pgvector</text>
+    <text class="body" x="18" y="50">row-level security per tenant</text>
+  </g>
+  <g transform="translate(494,1058)">
+    <rect class="card" x="0" y="0" width="262" height="72" rx="10"/>
+    <text class="title" x="18" y="28">Anthropic · OpenAI</text>
+    <text class="body" x="18" y="50">one adapter, one contract</text>
+  </g>
+  <g transform="translate(773,1058)">
+    <rect class="card" x="0" y="0" width="262" height="72" rx="10"/>
+    <text class="title" x="18" y="28">Enterprise systems</text>
+    <text class="body" x="18" y="50">reached only via MCP</text>
+  </g>
+
+  <!-- rails tie-in -->
+  <path class="flowdim" d="M 190 640 L 211 640"/>
+  <path class="flowdim" d="M 1035 640 L 1046 640"/>
+
+  <text class="lbl" x="215" y="1170">Refusals are typed and traceable: 401 authentication_failed · 403 authorization_denied ·</text>
+  <text class="lbl" x="215" y="1190">403 guardrail_tripped · 403 policy_violation · 429 budget_exceeded · 503 no_provider_available</text>
+  <text class="lbl" x="215" y="1210">Every one carries the rule or permission that produced it, plus the correlation id.</text>
+</svg>

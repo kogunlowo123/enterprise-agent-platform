@@ -1,0 +1,44 @@
+# Gitleaks configuration.
+#
+# The test suite has to contain credential-shaped strings, because the thing under test is a
+# detector that finds them. Allowlisting is scoped to the specific published example values
+# and to the test tree — not to the pattern, and not to src/.
+
+title = "enterprise-agent-platform"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = """
+AWS publishes AKIAIOSFODNN7EXAMPLE and wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY as
+documentation examples. They are deliberately non-functional and are used here as fixtures
+for the credential detector and its tests.
+"""
+regexes = [
+  '''AKIAIOSFODNN7EXAMPLE''',
+  '''wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY''',
+]
+
+[[allowlists]]
+description = """
+Synthetic fixtures in the test suite. Each spells out that it is not a credential, so it
+matches this project's detector without resembling a real token to an upstream scanner.
+Scoped to tests/ so the same string appearing in src/ would still be reported.
+"""
+paths = [
+  '''tests/.*\.py$''',
+]
+regexes = [
+  '''(ghp|gho|ghu|ghs|ghr)_EXAMPLENOTAREALTOKEN\d+''',
+  '''sk-ant-EXAMPLE\d+NOTAREALKEY\d+''',
+  '''xox[baprs]-EXAMPLE-NOT-A-REAL-SLACK-TOKEN-\d+''',
+]
+
+[[allowlists]]
+description = "Documentation placeholders and the committed example environment file."
+paths = [
+  '''\.env\.example$''',
+  '''docs/.*\.md$''',
+  '''README\.md$''',
+]

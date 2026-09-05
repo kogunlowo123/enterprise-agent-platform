@@ -1,0 +1,124 @@
+# Defaults suit a development cluster. values.prod.yaml overrides what production needs.
+
+replicaCount: 2
+
+image:
+  repository: ghcr.io/kogunlowo123/enterprise-agent-platform
+  tag: ""          # defaults to .Chart.AppVersion
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}   # e.g. IRSA / Workload Identity binding
+  name: ""
+
+service:
+  type: ClusterIP
+  port: 8000
+
+# The container runs as uid 10001 with no writable filesystem. The two tmpfs mounts below
+# are the only writable paths, and they exist because Python needs a temp directory.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  privileged: false
+  capabilities:
+    drop: ["ALL"]
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    # No CPU limit on purpose: CFS throttling on a latency-sensitive request path costs
+    # more than the noisy-neighbour risk it prevents. Memory is limited, because an
+    # unbounded memory leak takes the node down rather than just the pod.
+    memory: 1Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Liveness must not consult a dependency: if it did, a database blip would restart every
+# pod in the cluster at once. Readiness must, because leaving the load-balancer pool is
+# the correct response to a broken dependency.
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 20
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+startupProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  periodSeconds: 5
+  failureThreshold: 24     # allows up to two minutes for a cold start
+
+networkPolicy:
+  enabled: true
+  # Mirrors the application-layer egress allowlist. The application check is fast and
+  # explains itself in an audit record; this one holds when the application is compromised.
+  allowedEgressPorts: [443, 5432]
+  dnsPort: 53
+
+env:
+  EAP_ENVIRONMENT: dev
+  EAP_OBS_LOG_FORMAT: json
+  EAP_OBS_LOG_LEVEL: INFO
+  EAP_SECOPS_AUDIT_SINK: file
+  EAP_SECOPS_AUDIT_FILE_PATH: /var/audit/audit.jsonl
+  EAP_DATAOPS_VECTOR_STORE: memory
+  EAP_NETOPS_RATE_LIMIT_PER_MINUTE: "120"
+
+# Secrets are referenced, never templated. The chart names an existing Secret so that the
+# values file can be committed and reviewed without carrying credentials.
+existingSecret: ""
+secretKeys:
+  - EAP_IDENTITY_JWKS_URL
+  - EAP_DATAOPS_POSTGRES_DSN
+  - EAP_LLMOPS_ANTHROPIC_API_KEY
+  - EAP_LLMOPS_OPENAI_API_KEY
+  - EAP_DATAOPS_GITHUB_TOKEN
+
+# Audit records are written here. In production this is a PVC with WORM retention, or the
+# sink is swapped for an object store with an object-lock policy.
+auditVolume:
+  enabled: true
+  size: 5Gi
+  storageClass: ""
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+podAnnotations: {}

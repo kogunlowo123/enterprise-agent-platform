@@ -1,0 +1,21 @@
+{{- if .Values.auditVolume.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "eap.fullname" . }}-audit
+  labels:
+    {{- include "eap.labels" . | nindent 4 }}
+  annotations:
+    # The audit chain proves integrity, not availability: an attacker with write access can
+    # still truncate the file. Bind this claim to storage with an object-lock or WORM
+    # retention policy, and export the head hash off-cluster on a schedule.
+    helm.sh/resource-policy: keep
+spec:
+  accessModes: [ReadWriteOnce]
+  {{- if .Values.auditVolume.storageClass }}
+  storageClassName: {{ .Values.auditVolume.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.auditVolume.size }}
+{{- end }}
