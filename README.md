@@ -339,7 +339,7 @@ make eval                       # run the evaluation suite as a gate
 pytest --cov=src/eap            # coverage report
 ```
 
-328 tests, 81% line coverage. The uncovered remainder is the vendor HTTP adapters and
+328 tests, 85% line coverage. The uncovered remainder is the vendor HTTP adapters and the
 pgvector paths, which need real external systems — everything else runs offline.
 
 The suite substitutes rather than mocks. The clock is manual, so rate limiters and circuit
