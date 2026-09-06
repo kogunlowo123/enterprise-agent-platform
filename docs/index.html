@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enterprise Agent Platform &mdash; Kenny Ogunlowo</title>
+<meta name="description" content="Provider-neutral control plane for running LLM agents inside an enterprise: identity, governance, knowledge, model routing and runtime. Hash-chained audit, hybrid RAG, MCP gateway, deterministic eval gate.">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Enterprise Agent Platform">
+<meta property="og:title" content="Enterprise Agent Platform &mdash; Provider-Neutral AI Agent Control Plane">
+<meta property="og:description" content="Identity, AI security, knowledge, model routing and runtime behind one HTTP surface. Hash-chained audit, prompt-injection defence, hybrid RAG, MCP gateway, deterministic eval gate. Python, FastAPI, 328 tests in CI.">
+<meta property="og:url" content="https://kogunlowo123.github.io/enterprise-agent-platform/">
+<meta property="og:image" content="https://kogunlowo123.github.io/enterprise-agent-platform/social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --line:#30363d;
+  --ink:#e6edf3; --muted:#9198a1; --accent:#58a6ff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+.wrap{max-width:860px; margin:0 auto; padding:56px 24px 96px}
+header{border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:36px}
+h1{font-size:2rem; line-height:1.2; margin:0 0 10px; letter-spacing:-.02em}
+.sub{color:var(--muted); margin:0 0 22px; font-size:1.05rem}
+.byline{color:var(--muted); font-size:.9rem; margin:0 0 24px}
+.byline a{color:var(--accent); text-decoration:none}
+.byline a:hover{text-decoration:underline}
+.actions{display:flex; flex-wrap:wrap; gap:12px}
+.btn{
+  display:inline-block; padding:10px 18px; border-radius:8px; text-decoration:none;
+  font-weight:600; font-size:.95rem; border:1px solid var(--line);
+  background:var(--panel); color:var(--ink);
+}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:#1f6feb; border-color:#1f6feb; color:#fff}
+.btn.primary:hover{background:#388bfd}
+h2{font-size:1.15rem; margin:40px 0 14px; letter-spacing:-.01em}
+table{width:100%; border-collapse:collapse; font-size:.94rem; display:block; overflow-x:auto}
+th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top}
+th{color:var(--muted); font-weight:600; white-space:nowrap}
+td strong{color:var(--ink)}
+code{background:var(--panel); padding:2px 6px; border-radius:5px; font-size:.88em}
+.flow{
+  background:var(--panel); border:1px solid var(--line); border-radius:8px;
+  padding:14px 16px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:.9rem; overflow-x:auto; color:var(--accent);
+}
+ul{padding-left:20px} li{margin-bottom:8px}
+footer{margin-top:56px; padding-top:24px; border-top:1px solid var(--line); color:var(--muted); font-size:.88rem}
+footer a{color:var(--accent); text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Enterprise Agent Platform</h1>
+  <p class="sub">A provider-neutral control plane for running LLM agents inside an enterprise &mdash; identity, governance, knowledge, model routing and runtime, behind one HTTP surface.</p>
+  <p class="byline">Built by <a href="https://www.linkedin.com/in/kehinde-ogunlowo/">Kenny Ogunlowo</a> &middot; Principal AI Platform Architect and AI Engineer</p>
+  <div class="actions">
+    <a class="btn primary" href="https://github.com/kogunlowo123/enterprise-agent-platform">View the source on GitHub</a>
+    <a class="btn" href="Kenny_S_Ogunlowo.pdf">Resume (PDF)</a>
+  </div>
+</header>
+
+<p>The goal is not a clever chatbot. It is an agent system an engineering team can deploy, operate,
+secure, test and extend &mdash; where every refusal names the rule that caused it, every model call is
+attributed to a tenant, and every decision lands in an audit log you can verify.</p>
+
+<h2>Six planes</h2>
+<table>
+  <tr><th>Plane</th><th>Question it answers</th><th>Key decisions</th></tr>
+  <tr><td><strong>Identity</strong></td><td>Who is acting?</td><td>Caller authority intersected with agent grant, so an agent can never widen its caller's reach</td></tr>
+  <tr><td><strong>SecOps</strong></td><td>Should this happen at all?</td><td>Injection scoring weighted by trust boundary; deny-overrides policy; hash-chained audit</td></tr>
+  <tr><td><strong>NetOps</strong></td><td>Can we reach it, and should we?</td><td>Token-bucket limits, full-jitter retry, circuit breaking, HTTPS egress allowlist</td></tr>
+  <tr><td><strong>DataOps</strong></td><td>What does the organisation know?</td><td>Structure-aware chunking, hybrid BM25 and vector retrieval fused by rank, per-tenant partitions</td></tr>
+  <tr><td><strong>LLMOps</strong></td><td>Which model, at what cost?</td><td>Named routes with cross-vendor fallback, pre-call budget checks, versioned prompts, deterministic evals</td></tr>
+  <tr><td><strong>AppOps</strong></td><td>How does the turn actually run?</td><td>The lifecycle loop, tool dispatch under the full permission chain, MCP gateway, scoped memory</td></tr>
+</table>
+
+<h2>The lifecycle</h2>
+<div class="flow">Receive &rarr; Resolve &rarr; Retrieve &rarr; Reason &rarr; Audit &rarr; Execute &rarr; Validate &rarr; Learn</div>
+<p>The sequence is the security design as much as the control flow. Guardrails run before anything else
+touches the input. Everything that can refuse cheaply refuses before a token is spent. The audit record
+is written <em>before</em> the action, because an action audited afterwards is one whose record can be
+lost by the crash it caused.</p>
+<p>The orchestrator owns the workflow. The model reasons inside it and never about it: it cannot skip
+validation, widen its own permissions, or decide this turn does not need auditing.</p>
+
+<h2>Engineering</h2>
+<ul>
+  <li>Python 3.11, 3.12 and 3.13; FastAPI; <code>mypy --strict</code>; Apache-2.0.</li>
+  <li>328 tests passing in CI, plus a separate security workflow.</li>
+  <li>Nothing below the composition root reaches for a global &mdash; every dependency is injected, so the
+      whole tree is testable by substitution rather than by patching.</li>
+  <li>OpenTelemetry instrumented end to end.</li>
+</ul>
+
+<footer>
+  <a href="https://github.com/kogunlowo123/enterprise-agent-platform">github.com/kogunlowo123/enterprise-agent-platform</a>
+  &middot; <a href="Kenny_S_Ogunlowo.pdf">Resume</a>
+  &middot; <a href="https://www.linkedin.com/in/kehinde-ogunlowo/">LinkedIn</a>
+</footer>
+
+</div>
+</body>
+</html>
