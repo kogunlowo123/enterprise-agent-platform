@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import pytest
 from pydantic import SecretStr
+from tests.synthetic_credentials import GITHUB_TOKEN
 
 from eap.platform.config import (
     DataOpsSettings,
@@ -131,9 +132,9 @@ class TestFieldValidation:
             DataOpsSettings(chunk_max_tokens=128, chunk_overlap_tokens=128)
 
     def test_secrets_do_not_appear_in_the_repr(self) -> None:
-        settings = DataOpsSettings(github_token=SecretStr("ghp_a_real_looking_token_value"))
-        assert "ghp_a_real_looking_token_value" not in repr(settings)
-        assert "ghp_a_real_looking_token_value" not in str(settings.github_token)
+        settings = DataOpsSettings(github_token=SecretStr(GITHUB_TOKEN))
+        assert GITHUB_TOKEN not in repr(settings)
+        assert GITHUB_TOKEN not in str(settings.github_token)
 
     @pytest.mark.parametrize("ratio", [-0.1, 1.1])
     def test_the_trace_sample_ratio_is_bounded(self, ratio: float) -> None:

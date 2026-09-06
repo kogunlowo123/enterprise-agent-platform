@@ -11,6 +11,7 @@ import base64
 
 import httpx
 import pytest
+from tests.synthetic_credentials import AWS_ACCESS_KEY
 
 from eap.dataops.connectors.github import GitHubConnector, GitHubRepoConfig
 from eap.platform.errors import NotFoundError, ProviderError
@@ -27,7 +28,7 @@ FILES: dict[str, tuple[str, str]] = {
     "blob-loader": ("src/loader.py", "def load(path):\n    return open(path).read()\n"),
     "blob-secret": (
         "config/credentials.md",
-        "# Credentials\n\nProduction key: AKIAIOSFODNN7EXAMPLE\n",
+        f"# Credentials\n\nProduction key: {AWS_ACCESS_KEY}\n",
     ),
     "blob-binary": ("assets/logo.png", "\x00\x01binary"),
 }
@@ -358,4 +359,4 @@ class TestIngestionIntegration:
         await client.aclose()
 
         documents = await store.all_documents("acme")
-        assert not any("AKIAIOSFODNN7EXAMPLE" in document.text for document in documents)
+        assert not any(AWS_ACCESS_KEY in document.text for document in documents)

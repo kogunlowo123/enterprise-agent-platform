@@ -30,8 +30,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev]" pip-audit
 
+      # --skip-editable excludes this project itself, which is installed with `pip install
+      # -e .` and has no PyPI release to look up. Without it the audit fails on the one
+      # package it has no reason to check.
       - name: Audit installed dependencies
-        run: python -m pip_audit --strict --progress-spinner off
+        run: python -m pip_audit --strict --skip-editable --progress-spinner off
 
   static-analysis:
     name: Static analysis
@@ -78,7 +81,7 @@ jobs:
           tags: enterprise-agent-platform:scan
 
       - name: Scan image
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: enterprise-agent-platform:scan
           format: sarif
@@ -94,7 +97,7 @@ jobs:
           category: trivy-container
 
       - name: Generate SBOM
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: enterprise-agent-platform:scan
           format: cyclonedx

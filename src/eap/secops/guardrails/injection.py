@@ -162,7 +162,19 @@ BOUNDARY_MULTIPLIER: dict[Boundary, float] = {
     Boundary.MODEL_OUTPUT: 1.2,
 }
 
-_ZERO_WIDTH = re.compile(r"[​-‏‪-‮⁠-⁤﻿]")
+# Written as escapes rather than literals. A source file containing actual bidirectional
+# control characters is unreviewable — you cannot see what you are approving — and static
+# analysers flag it as Trojan Source (CWE-838), correctly. Writing the detector for
+# invisible characters using invisible characters would be a poor joke at reviewers'
+# expense.
+_ZERO_WIDTH = re.compile(
+    "["
+    "\u200b-\u200f"  # zero-width space, ZWNJ, ZWJ, LRM, RLM
+    "\u202a-\u202e"  # bidirectional embedding, override and pop
+    "\u2060-\u2064"  # word joiner and the invisible operators
+    "\ufeff"  # zero-width no-break space (BOM when leading)
+    "]"
+)
 
 
 class InjectionDetector:
@@ -232,7 +244,7 @@ class InjectionDetector:
 
         NFKC folds full-width and mathematical alphanumerics onto ASCII, so ``ｉｇｎｏｒｅ``
         and ``𝗂𝗀𝗇𝗈𝗋𝖾`` both reach the patterns as ``ignore``. Zero-width characters are
-        removed because ``i​gnore`` reads as ``ignore`` to a tokenizer but not to a
+        removed because ``i\u200bgnore`` reads as ``ignore`` to a tokenizer but not to a
         regex — and their presence is itself evidence.
         """
         stripped = _ZERO_WIDTH.sub("", text)

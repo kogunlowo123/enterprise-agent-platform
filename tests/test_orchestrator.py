@@ -8,6 +8,7 @@ frequently turns out to be bypassable.
 from __future__ import annotations
 
 import pytest
+from tests.synthetic_credentials import AWS_ACCESS_KEY
 
 from eap.appops.orchestrator import AgentRequest, Orchestrator
 from eap.dataops.vectorstore import Document, InMemoryVectorStore
@@ -104,7 +105,7 @@ class TestSecurityInvariants:
     ) -> None:
         with pytest.raises(GuardrailTripped):
             await orchestrator.run(
-                AgentRequest(question="Is AKIAIOSFODNN7EXAMPLE still valid?"),
+                AgentRequest(question=f"Is {AWS_ACCESS_KEY} still valid?"),
                 ctx=security,
                 correlation_id="c1",
             )

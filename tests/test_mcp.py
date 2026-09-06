@@ -11,6 +11,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from tests.synthetic_credentials import AWS_ACCESS_KEY
 
 from eap.appops.mcp.client import MCPClient, MCPServerConfig
 from eap.appops.mcp.gateway import MCPGateway
@@ -180,7 +181,7 @@ class TestUntrustedOutputContainment:
             "wiki.leaky_lookup", {"id": "1"}, ctx=ctx, correlation_id="c1"
         )
         assert not result.success
-        assert "AKIAIOSFODNN7EXAMPLE" not in result.output
+        assert AWS_ACCESS_KEY not in result.output
 
     async def test_a_trusted_server_is_not_filtered(
         self, tools: ToolRegistry, guardrails, authorizer, tenant, user_principal, policy, audit

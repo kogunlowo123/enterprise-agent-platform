@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pytest
+from tests.synthetic_credentials import AWS_ACCESS_KEY
 
 from eap.llmops.cost import CostTracker, ModelPrice
 from eap.llmops.evaluation import metrics
@@ -366,7 +367,7 @@ class TestMetrics:
         assert metrics.injection_resistance("a clean answer", canary="CANARY_7781").passed
 
     def test_credential_leakage_in_an_answer_fails(self) -> None:
-        assert not metrics.no_sensitive_data("the key is AKIAIOSFODNN7EXAMPLE").passed
+        assert not metrics.no_sensitive_data(f"the key is {AWS_ACCESS_KEY}").passed
         assert metrics.no_sensitive_data("the deploy window is 09:00-16:00").passed
 
     def test_contains_all_reports_what_is_missing(self) -> None:
